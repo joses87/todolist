@@ -1,105 +1,107 @@
 //import logo from './logo.svg';
 // import './App.css';
 // import ProjectList from "./ProjectList";
+import { initialProjects } from "./initialProjects";
+import { tasks } from "./tasks";
 
 import { useState } from "react";
 
-const projects = [
-  {
-    id: 1,
-    title: "Build React app",
-    isComplete: false,
-    dateCreated: new Date(),
-    dateCompleted: new Date(),
-    priority: 1,
-  },
-  {
-    id: 2,
-    title: "Build Css app",
-    isComplete: false,
-    dateCreated: new Date(),
-    dateCompleted: new Date(),
-    priority: 2,
-  },
-  {
-    id: 3,
-    title: "fill Up Car",
-    isComplete: true,
-    dateCreated: new Date(),
-    dateCompleted: new Date(),
-    priority: 2,
-  },
-];
-
-const tasks = [
-  {
-    id: 1,
-    projectId: 1,
-    taskName: "Create ",
-  },
-  {
-    id: 2,
-    projectId: 1,
-    taskName: "create index.html file",
-  },
-  {
-    id: 3,
-    projectId: 2,
-    taskName: "PHP task",
-  },
-  {
-    id: 4,
-    projectId: 2,
-    taskName: "C# ",
-  },
-];
-
 export default function App() {
-  const [projectId, setProjectId] = useState(0);
+  //TODO: initialize projects array and pass it to Projects component
+  const [projects, setProjects] = useState(initialProjects);
+  const [projectId, setProjectId] = useState(null);
 
-  function handleSetTask(value) {
-    console.log("handleSetTask: ", value);
-    setProjectId(value);
+  function handleSetProjects(newFriend) {
+    setProjects((project) => [...project, projects]);
+  }
+  function handleSetProject(id) {
+    // console.log("handleSetProject: ", id);
+    setProjectId(id);
   }
 
+  const main = {
+    margin: "10px",
+    padding: "10px",
+    display: "flex",
+    border: "1px solid grey",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignContent: "stretch",
+    justifyContent: "space-between",
+  };
+  const panelStyle = {
+    border: "1px solid grey",
+    margin: "0",
+  };
   return (
-    <div className="App">
-      <ProjectList handleSetTask={handleSetTask} />
-      <TaskList projectId={projectId} />
+    <div className="App" style={main}>
+      <div className="" style={panelStyle}>
+        <ProjectList projects={projects} handleSetProject={handleSetProject} />
+      </div>
+      {/* <div className="" style={panelStyle}>
+        {showSubProject && (
+          <ProjectList
+            handleSetProject={handleSetProject}
+            handleShowSubProject={handleShowSubProject}
+          />
+        )}
+      </div> */}
+      <div className="" style={panelStyle}>
+        <TaskList projectId={projectId} />
+      </div>
     </div>
   );
 }
 
-function ProjectList({ handleSetTask }) {
+function ProjectList({ projects, handleSetProject, handleShowSubProject }) {
+  const ulStyle = {
+    margin: 0,
+    padding: "9px",
+  };
   return (
-    <ul>
-      {projects.map((project) => (
+    <ul style={ulStyle}>
+      {projects?.map((project) => (
         <Project
           key={project.id}
           project={project}
-          handleSetTask={handleSetTask}
+          handleSetProject={handleSetProject}
+          handleShowSubProject={handleShowSubProject}
         />
       ))}
     </ul>
   );
 }
 
-function Project({ project, handleSetTask }) {
-  function handleOnClick(e) {
-    const projectId = e.target.value;
-    handleSetTask(projectId);
-  }
+function Project({ project, handleSetProject, handleShowSubProject }) {
+  // function handleOnClick(e) {
+  //   const projectId = e.target.value;
+  //   console.log("projectId: ", projectId);
+  //   handleSetProject(projectId);
+  // }
+
+  const listItemStyle = {
+    listStyle: "none",
+    border: "1px solid black",
+    padding: "10px",
+    margin: "10px",
+  };
 
   return (
-    <li onClick={handleOnClick} value={project.id}>
-      Id: {project.id}: Title: {project.title}: Completed:
-      {project.isComplete.toString()}
+    <li
+      style={listItemStyle}
+      onClick={() => handleSetProject(project.id)}
+      value={project.id}
+    >
+      Id: {project.id}
+      <br /> ParentId: {project.parentId?.toString()}
+      <br /> Title: {project.title}
+      <br /> Completed: {project.isComplete.toString()}
     </li>
   );
 }
 
 function TaskList({ projectId }) {
-  console.log(projectId);
+  // console.log("TaskList.projectId: ", projectId);
   return (
     <ul>
       {tasks
